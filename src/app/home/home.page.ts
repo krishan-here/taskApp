@@ -7,6 +7,14 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  lists: string[] = ['Exercise', 'Morning Affirmations', 'Breakfast'];
+  showInput = false;
+  constructor() { }
+
+
+  addTask(task) {
+    this.lists.push(task);
+    this.showInput = false;
+  }
 
 }
