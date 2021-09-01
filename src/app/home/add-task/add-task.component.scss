@@ -1,0 +1,49 @@
+.service {
+  &_wrapper {
+      padding: 20px;
+      position: relative;
+      .dark_input {
+          margin-bottom: 8px;
+          ion-input {
+              --background: #F6F6F6;
+              --padding-start: 8px;
+              text-align: left;
+              border: 1px solid #ECECEC;
+              border-radius: 8px;
+              font-size: 14px;
+          }
+      }
+      .save_btn {
+          text-align: center;
+          ion-button {
+              color: #fff;
+              --padding-start: 40px;
+              --padding-end: 40px;
+              --border-radius: 24px;
+              font-size: 14px;
+              text-transform: none;
+          }
+      }
+  }
+
+  &_dismiss {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+
+      ion-icon {
+          font-size: 24px;
+          color: #fff;
+      }
+  }
+
+  &_title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      p{
+          text-align: center;
+      }
+  }
+
+}

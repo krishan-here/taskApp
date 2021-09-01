@@ -1,5 +1,31 @@
+.month-section{
+  position: fixed;
+}
+
 .add-task-icon{
-  position: absolute;
+  position: fixed;
   bottom: 5%;
   right: 5%;
+  z-index: 1;
 }
+.weeks{
+  ion-col{
+    color: rgb(54, 54, 54);
+  }
+}
+ion-col{
+  // border: 1px solid #fff;
+  display: grid;
+  place-items: center;
+  color: darkgrey;
+  height: 40px;
+  .dot{
+    width: 4px;
+    height: 4px;
+    background-color: red;
+    border-radius: 50%;
+  }
+  width: fit-content;
+  border-radius: 50%;
+}
+

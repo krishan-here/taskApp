@@ -5,21 +5,56 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-item *ngFor="let task of lists">
-    <ion-label>{{task}}</ion-label>
-    <ion-checkbox slot="start" color="success"></ion-checkbox>
-  </ion-item>
-    <ion-item *ngIf="showInput">
-      <ion-input #task placeholder='type task'></ion-input>
-      <ion-button type="submit" (click)='addTask(task.value)'>add</ion-button>
-    </ion-item>
+  <!-- month section  -->
+  <ion-grid>
+    <ion-row class="weeks">
+      <ion-col>Sun</ion-col>
+      <ion-col>Mon</ion-col>
+      <ion-col>Tue</ion-col>
+      <ion-col>Wed</ion-col>
+      <ion-col>Thu</ion-col>
+      <ion-col>Fri</ion-col>
+      <ion-col>Sat</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-align-self-center" *ngFor="let i of [1,2,3,4,5,6,7]">
+        {{i> startCol? i-startCol : '' }}
+      </ion-col>
+    </ion-row>
 
-  <ion-toolbar class="add-task-icon">
+    <ion-row *ngFor="let i of calenderArray;let idx=index">
+      <ion-col class="ion-align-self-center"> {{i}} </ion-col>
+      <ion-col class="ion-align-self-center">{{i+1}}</ion-col>
+      <ion-col class="ion-align-self-center">{{i+2}}</ion-col>
+      <ion-col class="ion-align-self-center">{{i+3}}</ion-col>
+      <ion-col class="ion-align-self-center">{{i+4}}</ion-col>
+      <ion-col class="ion-align-self-center">{{i+5}}</ion-col>
+      <ion-col class="ion-align-self-center">{{i+6}}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-align-self-center" *ngFor="let i of [0,1,2,3,4,5,6]">
+        {{i<= lastCol ? lastSundayDate+i: ''}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- task section  -->
+
+  <ion-item *ngFor="let item of lists">
+    <ion-label>{{item.task}}</ion-label>
+    <ion-checkbox
+      slot="start"
+      color="success"
+      [checked]="item.status"
+    ></ion-checkbox>
+  </ion-item>
+
+  <div class="add-task-icon">
     <ion-icon
       slot="end"
       size="large"
       name="create-outline"
-      (click)="showInput = !showInput"
+      (click)="addTask()"
     ></ion-icon>
-  </ion-toolbar>
+  </div>
 </ion-content>
