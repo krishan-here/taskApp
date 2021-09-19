@@ -1,30 +1,71 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MenuController, ModalController, ToastController } from '@ionic/angular';
 import { ApiService } from '../core/services/api.service';
+import { FunctionService } from '../core/services/function.service';
 import { AddTaskComponent } from './add-task/add-task.component';
+import { monthArray } from './data';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePage implements OnInit {
 
+  monthArray: {[key: string]: any}= monthArray;
   lists: any[] = [];
   showInput = false;
   calenderArray=[];
+  today;
   startCol;
   lastCol;
   lastSundayDate;
+  todayData={
+      isTaskDone: true,
+      date: 'Wed Sep 01 2021',
+      task: [
+        {
+          name: 'exercise',
+          status: true,
+        },
+        {
+          name: 'Bath',
+          status: false,
+        },
+        {
+          name: 'coding',
+          status: true,
+        },
+      ]
+    };
   constructor(
-    private apiService: ApiService,
+    private functionService: FunctionService,
+    public toastController: ToastController,
     public modalController: ModalController,
   ) { }
 
   ngOnInit(){
-    this.calenderArray= this.getCalender();
+    this.presentToast();
+    this.calenderArray= this.functionService.getCalender();
+    this.today = this.functionService.today;
+    this.startCol = this.functionService.startCol;
+    this.lastSundayDate = this.functionService.lastSundayDate;
+    this.lastCol = this.functionService.lastCol;
     this.onGetTasks();
   }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Your',
+      duration: 2000,
+      position: 'top',
+      cssClass: 'reward-toast'
+    });
+    toast.present();
+  }
+
+
   async presentTaskModal() {
     const modal = await this.modalController.create({
       component: AddTaskComponent,
@@ -38,31 +79,32 @@ export class HomePage implements OnInit {
     return await modal.present();
   }
 
+  showType(date){
+    const d= new Date(this.today.getFullYear(), this.today.getMonth(), date);
+    const dateName = this.functionService.changeToKey(d.toDateString());
+    if(this.monthArray.hasOwnProperty(dateName) && this.monthArray[dateName].isTaskDone){
+      return 'success';
+    }
+    if(d.toDateString() === this.today.toDateString()){
+      return 'today';
+    }
+    if(this.monthArray.hasOwnProperty(dateName) && !this.monthArray[dateName].isTaskDone){
+      return 'fail';
+    }
+    return 'number';
+
+  }
+
   addTask(){
     this.presentTaskModal();
   }
 
   onGetTasks(){
-    this.apiService.getTasks().subscribe({
-      next: (res) => this.lists = res,
-      error: (err)=> console.log(err)
-    });
+    this.lists = this.todayData.task;
   }
-
-  getCalender(){
-    const today = new Date();
-    const dayOne = new Date(today.getFullYear(), today.getMonth(), 1);
-    this.startCol = dayOne.getDay();
-    const lastDate = new Date(today.getFullYear(), today.getMonth()+1, 0);
-    this.lastCol = lastDate.getDay();
-    const array=[];
-    let i=7 - this.startCol + 1;
-    while(i<=lastDate.getDate()){
-      array.push(i);
-      i+=7;
-    }
-    this.lastSundayDate = array.pop();
-    return array;
+  statusChange(){
+    //logic for update in db
 
   }
+
 }

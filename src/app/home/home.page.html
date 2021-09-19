@@ -1,12 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-menu-button color="dark"></ion-menu-button>
+    </ion-buttons>
     <ion-title> taskApp </ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
   <!-- month section  -->
   <ion-grid>
+    <!-- <ion-row>Aug, 2021</ion-row> -->
     <ion-row class="weeks">
       <ion-col>Sun</ion-col>
       <ion-col>Mon</ion-col>
@@ -18,22 +21,69 @@
     </ion-row>
     <ion-row>
       <ion-col class="ion-align-self-center" *ngFor="let i of [1,2,3,4,5,6,7]">
-        {{i> startCol? i-startCol : '' }}
+        <ng-container *ngIf="i> startCol">
+          <ng-container [ngSwitch]="showType(i-startCol)">
+            <div class="current_date" *ngSwitchCase="'today'">
+              {{i-startCol}}
+            </div>
+            <ng-container *ngSwitchCase="'success'">
+              <ion-icon
+                name="checkmark-circle-outline"
+                size="large"
+                color="success"
+              ></ion-icon>
+            </ng-container>
+            <ng-container *ngSwitchCase="'fail'">
+              {{i-startCol}}
+              <div class="dot" *ngSwitchCase="'fail'"></div>
+            </ng-container>
+            <ng-container *ngSwitchDefault> {{i-startCol}} </ng-container>
+          </ng-container>
+        </ng-container>
       </ion-col>
     </ion-row>
 
     <ion-row *ngFor="let i of calenderArray;let idx=index">
-      <ion-col class="ion-align-self-center"> {{i}} </ion-col>
-      <ion-col class="ion-align-self-center">{{i+1}}</ion-col>
-      <ion-col class="ion-align-self-center">{{i+2}}</ion-col>
-      <ion-col class="ion-align-self-center">{{i+3}}</ion-col>
-      <ion-col class="ion-align-self-center">{{i+4}}</ion-col>
-      <ion-col class="ion-align-self-center">{{i+5}}</ion-col>
-      <ion-col class="ion-align-self-center">{{i+6}}</ion-col>
+      <ion-col
+        class="ion-align-self-center"
+        *ngFor="let inc of [0,1,2,3,4,5,6]"
+      >
+        <ng-container [ngSwitch]="showType(i+inc)">
+          <ion-icon
+            name="checkmark-circle-outline"
+            *ngSwitchCase="'success'"
+            size="large"
+            color="success"
+          ></ion-icon>
+          <div class="current_date" *ngSwitchCase="'today'">{{i + inc}}</div>
+          <ng-container *ngSwitchCase="'fail'">
+            {{i + inc}}
+            <div class="dot"></div>
+          </ng-container>
+          <ng-container *ngSwitchDefault> {{i + inc}} </ng-container>
+        </ng-container>
+      </ion-col>
     </ion-row>
     <ion-row>
       <ion-col class="ion-align-self-center" *ngFor="let i of [0,1,2,3,4,5,6]">
-        {{i<= lastCol ? lastSundayDate+i: ''}}
+        <ng-container *ngIf="i <= lastCol">
+          <ng-container [ngSwitch]="showType(lastSundayDate+i)">
+            <ion-icon
+              name="checkmark-circle-outline"
+              *ngSwitchCase="'success'"
+              size="large"
+              color="success"
+            ></ion-icon>
+            <div class="current_date" *ngSwitchCase="'today'">
+              {{lastSundayDate+i}}
+            </div>
+            <ng-container *ngSwitchCase="'fail'">
+              {{lastSundayDate+i}}
+              <div class="dot"></div>
+            </ng-container>
+            <ng-container *ngSwitchDefault> {{lastSundayDate+i}} </ng-container>
+          </ng-container>
+        </ng-container>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -41,11 +91,12 @@
   <!-- task section  -->
 
   <ion-item *ngFor="let item of lists">
-    <ion-label>{{item.task}}</ion-label>
+    <ion-label>{{item.name}}</ion-label>
     <ion-checkbox
       slot="start"
       color="success"
       [checked]="item.status"
+      (ionChange)="statusChange()"
     ></ion-checkbox>
   </ion-item>
 
